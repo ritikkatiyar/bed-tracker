@@ -4,36 +4,65 @@
 	if(!isset($_SESSION['user_id'])){ Redirect('index.php'); }
 	else
 	{
-		$error="";
-		$msg="<br><span class=msg>Bed Added Successfully</span><br><br>";
 		require_once('header.php');
 	}
 ?>
-        <ul id="mainNav">
-        	<li><a href="dashboard.php">DASHBOARD</a></li> <!-- Use the "active" class for the active menu item  -->
-        	<li><a href="patients.php">PATIENTS</a></li>
-        	<li><a href="beds.php" class="active">BEDS</a></li>
-        	<li class="logout"><a href="logout.php">LOGOUT</a></li>
-        </ul>
-        <!-- // #end mainNav -->
-        
-        <div id="containerHolder">
-			<div id="container">
-        		<div id="sidebar">
-                	<ul class="sideNav">
-                    	<li><a href="beds.php">VIew All Beds</a></li>
-                    	<li><a href="add-bed.php" class="active">Add New Bed</a></li>
-                    </ul>
-                    <!-- // .sideNav -->
-                </div>    
-                <!-- // #sidebar -->
+<h2>NIMS</h2>
                 
-                <!-- h2 stays for breadcrumbs -->
-                <h2>Add New Bed</h2>
+                <div id="main">
+					<h3>Bed availability</h3>
+               	  <table>
+                  <?php
+				  	$result=mysqli_query($server,"SELECT COUNT(pat_id) FROM patients");
+					$row=mysqli_fetch_row($result);
+					
+					$result2=mysqli_query($server,"SELECT COUNT(bed_id) FROM beds");
+					$row2=mysqli_fetch_row($result2);
+					
+					$result3=mysqli_query($server,"SELECT COUNT(pat_id) FROM pat_to_bed WHERE bed_id>0");
+					$row3=mysqli_fetch_row($result3);
+					
+					$result4=mysqli_query($server,"SELECT COUNT(bed_id) FROM pat_to_bed WHERE bed_id>0");
+					$row4=mysqli_fetch_row($result4);
+					
+					$result5=mysqli_query($server,"SELECT COUNT(pat_id) FROM pat_to_bed WHERE bed_id=0 AND bed_id!='none'");
+					$row5=mysqli_fetch_row($result5);
+					
+					$row6[0] = $row2[0] - $row4[0];
+					
+					$result7=mysqli_query($server,"SELECT COUNT(pat_id) FROM pat_to_bed WHERE bed_id='none'");
+					$row7=mysqli_fetch_row($result7); 
+					
+					
+					
+  							echo"<tr>
+    							<td align=center valign=middle><b>Patients</b></td>
+    							<td align=center valign=middle><b>Beds</b></td>
+  							</tr>
+  							<tr>
+    							<td align=center valign=middle>Total - $row[0]</td>
+    							<td align=center valign=middle>Total - $row2[0]</td>
+							</tr>
+  							<tr>
+    							<td align=center valign=middle>Admitted - $row3[0]</td>
+    							<td align=center valign=middle>Occupied - $row4[0]</td>
+							</tr>
+  							<tr>
+   		 						<td align=center valign=middle>Discharged - $row5[0]</td>
+    							<td align=center valign=middle>Vacant - $row6[0]</td>
+							</tr>
+  							<tr>
+   							  <td align=center valign=middle>Unassigned to bed - $row7[0]</td>
+    							<td align=center valign=middle>&nbsp;</td>
+							</tr>";
+					?>
+				  </table>
+                        <br /><br />
+                </div>
+				<h2>Select Bed</h2>
                 
                 <div id="main">
                 <form method="post" class="jNice">
-					<h3>Registration Form</h3>
                     <?php
 						if(isset($_POST['save']))
 						{
@@ -74,10 +103,13 @@
                                 <option value="Paediatric">Paediatric</option>
                             </select>
                             </p>
-                            <input type="submit" value="Save" name="save" />
+							
+							<button type="submit" formaction="http://localhost/Hosptal-Bed-Management-master/hospital-bed-tracker/payment.php">Payment</button>
+
+							
+
+							
                         </fieldset>
                     </form>
                         <br /><br />
                 </div>
-                <!-- // #main -->
- 

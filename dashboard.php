@@ -4,7 +4,10 @@
 	if(!isset($_SESSION['user_id'])){ Redirect('index.php'); }
 	else
 	{
-		require_once('header.php');
+		
+			$error="";
+			$msg="<br><span class=msg>Patient Added Successfully</span><br><br>";
+			require_once('header.php');
 	}
 ?>
         <ul id="mainNav">
@@ -14,71 +17,86 @@
         	<li class="logout"><a href="logout.php">LOGOUT</a></li>
         </ul>
         <!-- // #end mainNav -->
-        
+        <style>#mainNav{
+			display:flex;
+			padding:8px;
+			
+			list-style-type:none;
+
+		}
+		ul li{
+			list-style-type:none;
+			margin:0;
+			padding:10px;
+
+		}
+			
+		</style>
+
         <div id="containerHolder">
 			<div id="container">
         		<div id="sidebar">
                 	<ul class="sideNav">
-                    	<li><a>Welcome, <?php echo $_SESSION['name']; ?></a></li>
+                    	<li><a>Welcome, Admin</a></li>
                     </ul>
                     <!-- // .sideNav -->
                 </div>    
                 <!-- // #sidebar -->
-                
-                <!-- h2 stays for breadcrumbs -->
-                <h2>Dashboard</h2>
+				<h2>Registration Form </h2>
                 
                 <div id="main">
-					<h3>Statistics</h3>
-               	  <table>
-                  <?php
-				  	$result=mysqli_query($server,"SELECT COUNT(pat_id) FROM patients");
-					$row=mysqli_fetch_row($result);
-					
-					$result2=mysqli_query($server,"SELECT COUNT(bed_id) FROM beds");
-					$row2=mysqli_fetch_row($result2);
-					
-					$result3=mysqli_query($server,"SELECT COUNT(pat_id) FROM pat_to_bed WHERE bed_id>0");
-					$row3=mysqli_fetch_row($result3);
-					
-					$result4=mysqli_query($server,"SELECT COUNT(bed_id) FROM pat_to_bed WHERE bed_id>0");
-					$row4=mysqli_fetch_row($result4);
-					
-					$result5=mysqli_query($server,"SELECT COUNT(pat_id) FROM pat_to_bed WHERE bed_id=0 AND bed_id!='none'");
-					$row5=mysqli_fetch_row($result5);
-					
-					$row6[0] = $row2[0] - $row4[0];
-					
-					$result7=mysqli_query($server,"SELECT COUNT(pat_id) FROM pat_to_bed WHERE bed_id='none'");
-					$row7=mysqli_fetch_row($result7); 
-					
-					
-					
-  							echo"<tr>
-    							<td align=center valign=middle><b>Patients</b></td>
-    							<td align=center valign=middle><b>Beds</b></td>
-  							</tr>
-  							<tr>
-    							<td align=center valign=middle>Total - $row[0]</td>
-    							<td align=center valign=middle>Total - $row2[0]</td>
-							</tr>
-  							<tr>
-    							<td align=center valign=middle>Admitted - $row3[0]</td>
-    							<td align=center valign=middle>Occupied - $row4[0]</td>
-							</tr>
-  							<tr>
-   		 						<td align=center valign=middle>Discharged - $row5[0]</td>
-    							<td align=center valign=middle>Vacant - $row6[0]</td>
-							</tr>
-  							<tr>
-   							  <td align=center valign=middle>Unassigned to bed - $row7[0]</td>
-    							<td align=center valign=middle>&nbsp;</td>
-							</tr>";
+                <form method="post" class="jNice">
+					<h3>Patient details</h3>
+                    <?php
+						if(isset($_POST['save']))
+						{
+							$name=trim($_POST['name']);
+							$age=trim($_POST['age']);
+							$sex=$_POST['sex'];
+							$bg=trim($_POST['bg']);
+							$phone=trim($_POST['phone']);
+							
+							if($name==""){ $error="<br><span class=error>Please enter a name</span><br><br>"; }
+							elseif($age==""){ $error="<br><span class=error>Please enter the age</span><br><br>"; }
+							elseif($age<1){ $error="<br><span class=error>Please enter a value greater than zero for age</span><br><br>"; }
+							elseif(!is_numeric($age)){ $error="<br><span class=error>Age must be a number</span><br><br>"; }
+							elseif($sex=="none"){ $error="<br><span class=error>Please select the sex</span><br><br>"; }
+							elseif($bg==""){ $error="<br><span class=error>Please enter a blood group</span><br><br>"; }
+							elseif($phone==""){ $error="<br><span class=error>Please enter the phone number</span><br><br>"; }
+							else
+							{
+								mysqli_query($server,"INSERT INTO patients (name,age,sex,blood_group,phone) VALUES ('$name','$age','$sex','$bg','$phone')");
+								$result=mysqli_query($server,"SELECT pat_id FROM patients ORDER BY pat_id DESC LIMIT 0,1");
+								$row=mysqli_fetch_array($result);
+								
+								mysqli_query($server,"INSERT INTO pat_to_bed (pat_id,bed_id) VALUES ('$row[pat_id]','none')");
+								echo $msg;
+							}
+							
+							if($error!=""){ echo $error; }
+						}
 					?>
-				  </table>
+                    	<fieldset>
+                        	<p><label>Patient Name:</label><input type="text" name="name" class="text-long" autofocus value="  " /></p>
+                            <p><label>Age:</label><input type="number" name="age" class="text-long" value="<?php echo $age; ?>" /></p>
+                            <p><label>Sex:</label>
+                            <select name="sex">
+                            	<option value="none">[--------SELECT--------]</option>
+                            	<option value="Male">Male</option>
+                            	<option value="Female">Female</option>
+                            	<option value="Transexual">Transexual</option>
+                            	<option value="Other">Other</option>
+                            </select>
+                            </p>
+                            <p><label>Bloog Group:</label><input type="text" name="bg" class="text-long" value=" " /></p>
+                            <p><label>Phone Number:</label><input type="text" name="phone" class="text-long" value="  " /></p>
+                            <input type="submit" value="Save" name="save" />
+                        </fieldset>
+                    </form>
                         <br /><br />
                 </div>
-                <!-- // #main -->
- <?php
-	require_once('footer.php');
-?>               
+				
+                
+                <!-- h2 stays for breadcrumbs -->
+               
+            

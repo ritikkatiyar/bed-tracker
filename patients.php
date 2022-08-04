@@ -19,6 +19,7 @@
 			<div id="container">
         		<div id="sidebar">
                 	<ul class="sideNav">
+						
                     	<li><a href="patients.php" class="active">VIew All Patients</a></li>
                     	<li><a href="add-patient.php">Add New Patient</a></li>
                     	<li><a href="assign-bed.php">Assign/Unassign Beds</a></li>

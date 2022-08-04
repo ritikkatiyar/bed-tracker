@@ -79,6 +79,7 @@ INSERT INTO `patients` (`pat_id`, `name`, `age`, `sex`, `blood_group`, `phone`) 
 (8, 'Kit Harington', 27, 'Transexual', 'A+', '+5517657643'),
 (10, 'Atinuke', 12, 'Other', 'A+', '0989976689');
 
+
 -- --------------------------------------------------------
 
 --
@@ -125,6 +126,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`user_id`, `name`, `uname`, `pword`) VALUES
 (1, 'Obi Adaobi', 'ada', 'ada');
+(2,'sahil gupta','sahi','sahi');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
